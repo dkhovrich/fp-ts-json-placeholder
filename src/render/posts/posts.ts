@@ -1,12 +1,12 @@
 import { chain, IO } from "fp-ts/IO";
 import { pipe } from "fp-ts/function";
 import { Post } from "../../api/posts";
-import { renderElement } from "../common";
+import { renderElement, RenderSelector } from "../common";
 import "./styles.css";
 
 export const createPostElement = (post: Post): IO<HTMLElement> => () => {
   const container = document.createElement("div");
-  container.classList.add("post-container");
+  container.classList.add("post");
 
   const id = document.createElement("p");
   id.innerText = `ID: ${post.id}`;
@@ -21,5 +21,8 @@ export const createPostElement = (post: Post): IO<HTMLElement> => () => {
   return container;
 };
 
-export const renderPost = (post: Post): IO<void> =>
-  pipe(post, createPostElement, chain(renderElement));
+export const renderPost = (selector?: RenderSelector) => (
+  post: Post
+): IO<void> => {
+  return pipe(post, createPostElement, chain(renderElement(selector)));
+};
